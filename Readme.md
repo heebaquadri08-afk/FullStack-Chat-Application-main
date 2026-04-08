@@ -82,9 +82,44 @@ npm start
 - A search bar to search for users.
 - Using Amazon S3 instead of Cloudinary to support sending large files.
 
+## Accessing via Wi-Fi (Multi-Device Setup)
+
+To use the chat application across different devices (e.g., two laptops on the same Wi-Fi):
+
+### 1. Find Your Local IP Address
+On the machine running the backend:
+- **Mac/Linux:** Open terminal and run `ifconfig` or `ip addr`. Look for `inet` under `en0` or `wlan0` (e.g., `192.168.1.10`).
+- **Windows:** Open CMD and run `ipconfig`. Look for `IPv4 Address`.
+
+### 2. Update Backend Configuration
+In `backend/.env`, update the `FRONTEND_URL` to include your local IP:
+```env
+FRONTEND_URL=http://<YOUR_LOCAL_IP>:5173
+```
+*Example: `FRONTEND_URL=http://192.168.1.10:5173`*
+
+### 3. Update Frontend Configuration
+In `frontend/.env`, update the `VITE_BACKEND_URL` to include your local IP:
+```env
+VITE_BACKEND_URL=http://<YOUR_LOCAL_IP>:5000
+```
+*Example: `VITE_BACKEND_URL=http://192.168.1.10:5000`*
+
+### 4. Restart Both Servers
+- Restart the backend: `npm start` (in `backend` folder)
+- Restart the frontend: `npm run dev` (in `frontend` folder)
+
+### 5. Access from Another Device
+1. Ensure both devices are on the **same Wi-Fi**.
+2. On the second device, open a browser and navigate to:
+   `http://<YOUR_LOCAL_IP>:5173`
+
+---
+
 ## Contributions
 Contributions are welcome! Feel free to fork this repository and submit a pull request.
 
 ## License
 This project is licensed under the MIT License.
+
 
