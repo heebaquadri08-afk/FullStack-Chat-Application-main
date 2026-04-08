@@ -50,7 +50,7 @@ npm install
 
 3. Start the backend server:
 ```
-npm start
+npm run dev
 ```
 
 ### Frontend Setup
@@ -65,7 +65,7 @@ npm install
 ```
 3. Start the frontend server:
 ```
-npm start
+npm run dev -- --host
 ```
 
 ## Usage

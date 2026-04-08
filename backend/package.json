@@ -28,5 +28,8 @@
     "@types/express": "^5.0.0",
     "@types/morgan": "^1.9.9",
     "nodemon": "^3.1.9"
+  },
+  "overrides": {
+    "buffer-equal-constant-time": "npm:safe-buffer-equal@latest"
   }
 }
