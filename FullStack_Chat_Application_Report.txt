@@ -1,0 +1,205 @@
+ABSTRACT
+
+The FullStack Chat Application is a real-time messaging platform designed to provide seamless and instantaneous communication between users. Built using the MERN stack (MongoDB, Express.js, React, and Node.js), the application leverages Socket.io to achieve bi-directional, low-latency communication. Key features include secure user authentication using JSON Web Tokens (JWT) and Bcrypt, a responsive user interface styled with Tailwind CSS, and real-time status updates such as online/offline tracking. The system also integrates Cloudinary for efficient profile picture and image message management. This report details the design, implementation, and various modules of the application, fulfilling the requirements for a modern full-stack web project.
+
+CHAPTER-1
+
+1.1 INTRODUCTION
+The rapid evolution of web technologies has transformed the way people communicate. Modern chat applications require high responsiveness and real-time capabilities to maintain user engagement. This project, titled FullStack Chat Application, is an end-to-end solution that addresses the need for secure and instant messaging. By utilizing the power of WebSockets and the flexibility of the MERN stack, the application offers a robust environment for personal communication.
+
+1.2 OBJECTIVES
+The primary objectives of this project are:
+To develop a real-time messaging system using WebSockets.
+To implement secure user authentication and authorization.
+To provide a responsive and user-friendly interface across devices.
+To allow users to manage their profiles and customize application themes.
+To ensure data persistence using a NoSQL database.
+
+1.3 PROJECT INTERFACE
+The project interface is a web-based application accessible via modern browsers. It features a clean dashboard where users can view their chat history, a sidebar listing online contacts, and a messaging window for active conversations. The interface also includes a settings page for theme selection (provided by DaisyUI) and a profile page for uploading avatars.
+
+1.4 BACKGROUND
+Traditional messaging systems often relied on HTTP polling, which is inefficient and leads to significant latency. With the advent of HTML5 and WebSockets, real-time communication has become more accessible. This project builds upon these technologies to create a modern chat experience that handles concurrent connections efficiently.
+
+1.5 PROBLEM STATEMENT
+Users often face issues with slow message delivery and lack of data security in basic chat implementations. Furthermore, many existing solutions are not mobile-friendly or lack personalization features. There is a need for a lightweight, secure, and real-time chat application that provides a consistent experience across all platforms.
+
+1.6 AIMS AND OBJECTIVES
+The aim of this project is to bridge the gap between simple chat scripts and complex enterprise messaging systems. The objectives involve creating a scalable backend using Node.js, a secure database schema in MongoDB, and a dynamic frontend in React that reflects state changes in real-time.
+
+CHAPTER-2
+
+2.1 LITERATURE SURVEY
+The literature survey focuses on the comparison between RESTful architectures and WebSocket-based communication. Research shows that WebSockets significantly reduce overhead for frequent data exchanges. Studies on the MERN stack highlight its efficiency in building single-page applications (SPAs) due to the unified use of JavaScript across the stack. Additionally, the use of JWT for stateless authentication is explored as a secure alternative to session-based systems.
+
+2.2 DESIGN AND IMPLEMENTATION CONSTRAINTS
+The application is constrained by:
+Network latency affecting real-time performance.
+Database storage limits on free-tier cloud instances.
+The need for consistent Internet connectivity for Socket.io functionality.
+Browser compatibility for certain modern CSS features.
+
+2.3 ASSUMPTIONS AND DEPENDENCIES
+It is assumed that the user has a stable internet connection and a modern web browser.
+Dependencies include:
+Node.js environment for server execution.
+MongoDB for data persistence.
+Cloudinary for image storage.
+Socket.io for the communication layer.
+
+CHAPTER-3
+
+3.1 SOFTWARE AND HARDWARE REQUIREMENTS
+Hardware Requirements:
+Processor: Intel i3 or above
+RAM: 4GB minimum (8GB recommended)
+Storage: 500MB free space
+Display: 1024x768 resolution or higher
+
+Software Requirements:
+Operating System: Windows 10/11, macOS, or Linux
+Development Environment: VS Code
+Runtime: Node.js (v18+)
+Database: MongoDB (Local or Atlas)
+Styling: Tailwind CSS and DaisyUI
+
+3.2 INSTALLATION
+1. Clone the repository from the source control.
+2. Navigate to the backend directory and run: npm install.
+3. Configure the .env file with MONGODB_URI, JWT_SECRET, and Cloudinary credentials.
+4. Start the backend: npm run dev.
+5. Navigate to the frontend directory and run: npm install.
+6. Configure the frontend .env with VITE_BACKEND_URL.
+7. Start the frontend: npm run dev.
+
+CHAPTER-4
+
+4.1 PROBLEM DESCRIPTION
+The project addresses the challenge of building a synchronized messaging environment where multiple users can interact without page refreshes. It involves managing socket connections, mapping user IDs to socket IDs, and ensuring that messages are correctly routed and stored.
+
+4.2 MODULE 1: AUTHENTICATION AND AUTHORIZATION
+This module handles user registration and login. It uses Bcrypt for password hashing to ensure security. Upon successful login, a JWT is generated and stored in a cookie. Middleware is implemented to protect private routes by verifying this token.
+
+4.3 MODULE 2: REAL-TIME MESSAGING
+This is the core module using Socket.io. When a user sends a message, it is saved to the database and simultaneously emitted to the receiver's socket ID if they are online. The frontend updates the message list instantly upon receiving the event.
+
+CHAPTER-5
+
+5.1 SOFTWARE REQUIREMENTS SPECIFICATION
+The system must support multiple simultaneous users. It should provide instant feedback on message delivery and online status. Data integrity must be maintained in the MongoDB database.
+
+5.2 SOFTWARE DESIGN
+The architecture follows a Client-Server model.
+Client: React-based SPA using Zustand for state management and Socket.io-client for real-time hooks.
+Server: Node.js/Express server handling API requests and managing a Socket.io server instance.
+
+5.3 BLOCK DIAGRAM
+[DIAGRAM: System Block Diagram showing Frontend, Backend, and Database interaction]
+The block diagram depicts the flow of data from the React frontend through Express controllers to the MongoDB database, with a parallel event-driven channel via Socket.io for messaging.
+
+CHAPTER-6
+
+6.1 PROBLEM DISCUSSION
+The main challenge during implementation was the synchronization of the message state when a user is chatting with someone. Ensuring that the socket is connected once the user is authenticated and disconnected on logout was crucial to maintain accurate "online" status lists.
+
+6.2 IMPLEMENTATION OF PROBLEM
+Implementation started with the database schema design. The messaging logic was built using an event-based approach:
+1. Sender sends message via POST API.
+2. Controller saves message to MongoDB.
+3. Controller retrieves Receiver's Socket ID.
+4. io.to(receiverSocketId).emit('newMessage', message) sends data.
+
+CHAPTER-7
+
+7.1 ER-DIAGRAM
+[DIAGRAM: ER-Diagram]
+The ER diagram consists of the User entity and the Message entity. 
+User: _id, fullName, email, password, profilePic.
+Message: _id, senderId (ref User), receiverId (ref User), text, image.
+There is a many-to-many relationship between Users formed through the Messages entity.
+
+7.2 DFD-DIAGRAM
+[DIAGRAM: DFD Level-0 and Level-1]
+Level-0: User interacts with the Chat System.
+Level-1: User logs in, system validates via DB. User sends message, system routes to recipient and stores in DB.
+
+CHAPTER-8
+
+8.1 SCREENSHOTS
+[SCREENSHOT: Login Page UI]
+[SCREENSHOT: Signup Page UI]
+[SCREENSHOT: Chat Dashboard with Sidebar]
+[SCREENSHOT: Real-time Messaging Window]
+[SCREENSHOT: Theme Selection Settings]
+[SCREENSHOT: Profile Update Page]
+
+CHAPTER-9
+
+9.1 CODING
+
+Authentication Logic (auth.controller.js):
+export const signup = async (req, res) => {
+  const { fullName, email, password } = req.body;
+  try {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const newUser = new User({ fullName, email, password: hashedPassword });
+    if (newUser) {
+      generateToken(newUser._id, res);
+      await newUser.save();
+      res.status(201).json(newUser);
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+Messaging Logic (message.controller.js):
+export const sendMessage = async (req, res) => {
+  try {
+    const { text, image } = req.body;
+    const { id: receiverId } = req.params;
+    const senderId = req.user._id;
+    const newMessage = new Message({ senderId, receiverId, text, image });
+    await newMessage.save();
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if(receiverSocketId){
+      io.to(receiverSocketId).emit("newMessage", newMessage);
+    }
+    res.status(201).json(newMessage);
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+Socket Server Implementation (socket.js):
+const io = new Server(server, { cors: { origin: [process.env.FRONTEND_URL] } });
+io.on("connection", (socket) => {
+    const userId = socket.handshake.query.userId;
+    if(userId) userSocketMap[userId] = socket.id;
+    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+    socket.on("disconnect", () => {
+        delete userSocketMap[userId];
+        io.emit("getOnlineUsers", Object.keys(userSocketMap));
+    });
+});
+
+CHAPTER-10
+
+10.1 CONCLUSION
+The FullStack Chat Application successfully demonstrates the integration of modern web technologies to solve real-world communication challenges. The project provides a secure, efficient, and real-time environment for users. The use of the MERN stack ensured a scalable foundation, while Socket.io provided the necessary low-latency communication.
+
+10.2 FUTURE WORK
+Future enhancements for this project include:
+1. Support for document and video file sharing.
+2. Group chat functionality.
+3. Message editing and deletion features.
+4. Integration with Amazon S3 for large file storage.
+5. End-to-end encryption for message content.
+
+10.3 REFERENCES
+1. MongoDB Documentation (docs.mongodb.com)
+2. React.js Official Documentation (react.dev)
+3. Socket.io Real-time engine Documentation (socket.io)
+4. MDN Web Docs - WebSockets API
+5. Node.js Documentation (nodejs.org)
